@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { toast } from "react-hot-toast";
 
 const filesExt = {
     image: ['jpg', 'jpeg', 'png'],
@@ -67,10 +68,11 @@ const ImageUploadModal = ({ isOpen, onClose, company, role }: ImageUploadModalPr
 
             const data = await res.json();
             console.log("Uploaded successfully:", data);
-
+            toast.success("Image Uploaded successfully?");
             setImage(null);
             onClose();
         } catch (err) {
+            toast.error("error in Image upload!");
             console.error("Image upload error:", err);
         }
     };

@@ -22,7 +22,7 @@ interface FormData {
 }
 
 const Register = ({ params: paramsPromise }: { params: Promise<{ id: number | number[] }> }) => {
-   const { id: rawId } = use(paramsPromise);
+  const { id: rawId } = use(paramsPromise);
   const id = Array.isArray(rawId) ? rawId[0] : rawId;
   const isEditMode = Boolean(id);
   console.log('id', id)
@@ -30,26 +30,26 @@ const Register = ({ params: paramsPromise }: { params: Promise<{ id: number | nu
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   const schema = yup.object().shape({
-  name: yup.string().required("Name is required").min(2, "Name too short"),
-  email: yup.string().email("Invalid email").required("Email required"),
-  company: yup.string().required("Company is required").min(2, "Company too short"),
-  role: yup.string().required("Role is required"),
-   ...(isEditMode
+    name: yup.string().required("Name is required").min(2, "Name too short"),
+    email: yup.string().email("Invalid email").required("Email required"),
+    company: yup.string().required("Company is required").min(2, "Company too short"),
+    role: yup.string().required("Role is required"),
+    ...(isEditMode
       ? {} // don't require password fields on update
       : {
-          password: yup
-            .string()
-            .required("Password is required")
-            .matches(
-              /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-              "Password must contain at least 8 characters, one uppercase, one number, and one special character"
-            ),
-          confirmPassword: yup
-            .string()
-            .required("Confirm Password is required")
-            .oneOf([yup.ref("password")], "Your passwords do not match."),
-        }),
-});
+        password: yup
+          .string()
+          .required("Password is required")
+          .matches(
+            /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
+            "Password must contain at least 8 characters, one uppercase, one number, and one special character"
+          ),
+        confirmPassword: yup
+          .string()
+          .required("Confirm Password is required")
+          .oneOf([yup.ref("password")], "Your passwords do not match."),
+      }),
+  });
 
 
 
@@ -84,46 +84,46 @@ const Register = ({ params: paramsPromise }: { params: Promise<{ id: number | nu
   });
 
   useEffect(() => {
-  const fetchUser = async () => {
-    if (id) {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/getuser?id=${id}`,
-          {
-            method: "GET",
-        headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${localStorage.getItem(
-                            "token"
-                        )}`,
-        },
+    const fetchUser = async () => {
+      if (id) {
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/getuser?id=${id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem(
+                  "token"
+                )}`,
+              },
+            }
+          );
+          if (!res.ok) {
+            throw new Error("Failed to fetch user data");
           }
-        );
-        if (!res.ok) {
-          throw new Error("Failed to fetch user data");
+
+          const item = await res.json();
+          console.log('item', item)
+          setValue("name", item.name);
+          setValue("email", item.email);
+          setValue("company", item.Company.name);
+          setValue("role", item.role);
+          trigger();
+        } catch (error) {
+          console.error("Error fetching user:", error);
         }
-
-        const item = await res.json();
-        console.log('item', item)
-        setValue("name", item.name);
-        setValue("email", item.email);
-        setValue("company", item.Company.name);
-        setValue("role", item.role);
-        trigger();
-      } catch (error) {
-        console.error("Error fetching user:", error);
+      } else {
+        setValue("name", "");
+        setValue("company", "");
+        setValue("email", "");
+        setValue("role", "");
+        setValue("password", "");
+        setValue("confirmPassword", "");
       }
-    } else {
-      setValue("name", "");
-      setValue("company", "");
-      setValue("email", "");
-      setValue("role", "");
-      setValue("password", "");
-      setValue("confirmPassword", "");
-    }
-  };
+    };
 
-  fetchUser();
-}, [id, setValue, trigger]);
+    fetchUser();
+  }, [id, setValue, trigger]);
 
 
   const onSubmit = async (data: FormData) => {
@@ -135,7 +135,7 @@ const Register = ({ params: paramsPromise }: { params: Promise<{ id: number | nu
       const url = id
         ? `${process.env.NEXT_PUBLIC_API_URL}/api/users/update?id=${encodeURIComponent(id)}`
         : `${process.env.NEXT_PUBLIC_API_URL}/api/users/register`;
-        console.log('url', url)
+      console.log('url', url)
       const res = await fetch(url, {
         method: requestMethod,
         headers: {
@@ -210,27 +210,27 @@ const Register = ({ params: paramsPromise }: { params: Promise<{ id: number | nu
         <option value="user">User</option>
       </select>
       {errors.role && <p className="text-red-600 text-sm">{errors.role.message}</p>}
-{!isEditMode && (
-  <>
-      <Input
-        label="Password"
-        type="password"
-        name="password"
-        register={register}
-        error={errors.password?.message}
-        placeholder="Enter password"
-      />
+      {!isEditMode && (
+        <>
+          <Input
+            label="Password"
+            type="password"
+            name="password"
+            register={register}
+            error={errors.password?.message}
+            placeholder="Enter password"
+          />
 
-      <Input
-        label="Confirm Password"
-        type="password"
-        register={register}
-        name="confirmPassword"
-        error={errors.confirmPassword?.message}
-        placeholder="Confirm password"
-      />
-      </>
-)}
+          <Input
+            label="Confirm Password"
+            type="password"
+            register={register}
+            name="confirmPassword"
+            error={errors.confirmPassword?.message}
+            placeholder="Confirm password"
+          />
+        </>
+      )}
       <button
         type="submit"
         className="w-full bg-blue-600 text-white p-2 rounded disabled:opacity-50"

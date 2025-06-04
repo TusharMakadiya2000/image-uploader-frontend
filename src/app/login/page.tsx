@@ -8,6 +8,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "@/components/comman/Input";
 import { useForm } from "react-hook-form";
 import { setLocalItem } from "@/utils";
+import { toast } from "react-hot-toast";
+
+
 interface FormDataType {
     email: string;
     password: string;
@@ -72,16 +75,19 @@ export default function LoginPage() {
 
             const responseData = await response.json();
             const token = responseData.token;
-            if(responseData.user){
+            if (responseData.user) {
                 setLocalItem('User', JSON.stringify(responseData.user));
             }
             localStorage.setItem("token", token);
-                  router.push("/dashboard");
+            toast.success("Login successfully!");
+            router.push("/dashboard");
         } catch (error: any) {
             console.error("Login failed:", error);
             if (error.response && error.response.status === 401) {
+                toast.error("Invalid username or password.");
                 console.error("Invalid username or password.");
             } else {
+                toast.error("Login failed. Please try again.");
                 console.error("Login failed. Please try again.");
             }
         } finally {

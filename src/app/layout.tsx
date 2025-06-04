@@ -3,6 +3,7 @@ import Sidebar from "@/components/comman/Sidebar";
 import "./globals.css";
 import Header from "@/components/comman/Header";
 import { usePathname } from "next/navigation";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
      <html lang="en">
       <body>
+        <Toaster position="top-right" />
         <div className="flex min-h-screen">
           {!isAuthPage && <Sidebar />}
           <div className="flex flex-col flex-grow">

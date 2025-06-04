@@ -5,6 +5,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 export default function Users() {
     const router = useRouter();
@@ -75,12 +76,12 @@ export default function Users() {
             if (!res.ok) {
                 throw new Error("Failed to delete user");
             }
-
+            toast.success("User delete successfully!");
             // Refresh the list
             fetchData();
         } catch (err) {
             console.error("Delete error:", err);
-            alert("Failed to delete user.");
+            toast.error("Error in user delete!");
         }
     };
 
